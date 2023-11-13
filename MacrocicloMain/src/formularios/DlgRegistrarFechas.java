@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dialogsMacrociclo;
+package formularios;
 
 import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
 import entidades.Macrociclo;
 import interfaces.IPersistenciaFachada;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import negocio.PersistenciaFachada;
 
 /**
@@ -45,6 +47,7 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setVisible(true);
+
     }
 
     private void calcularYMostrarSemanasRedondeadas() throws Exception {
@@ -83,8 +86,8 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
         TextFieldCompetitivo = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
+        TextPorcentajeCompetitivo = new javax.swing.JTextField();
+        TextPorcentajePreparativo = new javax.swing.JTextField();
         TextFieldPreparativo = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -122,9 +125,12 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
 
         jLabel5.setText("Periodo preparativo");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        TextPorcentajeCompetitivo.setEditable(false);
+
+        TextPorcentajePreparativo.setEditable(false);
+        TextPorcentajePreparativo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                TextPorcentajePreparativoActionPerformed(evt);
             }
         });
 
@@ -170,11 +176,11 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel5)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(TextPorcentajePreparativo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jLabel4)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(TextPorcentajeCompetitivo, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(TextFieldCompetitivo, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -208,12 +214,12 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextPorcentajePreparativo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TextFieldPreparativo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TextPorcentajeCompetitivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TextFieldCompetitivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(btnGuardar)
@@ -229,6 +235,7 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(DlgRegistrarFechas.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         try {
             fechaFin = toDate(null, dateTimeFin);
         } catch (Exception ex) {
@@ -242,14 +249,34 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
 // Redondea hacia arriba
         int semanasRedondeadasTotales = (int) Math.ceil(semanas);
 
-        int periodoPreparativo = Integer.parseInt(TextFieldPreparativo.getText());
-        int periodoCompetitivo = Integer.parseInt(TextFieldCompetitivo.getText());
+        String preparativoText = TextFieldPreparativo.getText().trim();
+        String competitivoText = TextFieldCompetitivo.getText().trim();
 
-        macrociclo = new Macrociclo("cebo",fechaInicio, fechaFin, semanasRedondeadasTotales, periodoPreparativo,periodoCompetitivo);
-        persistencia.registrarMacrociclo(macrociclo);
+// Verificar que los campos no estén vacíos
+        if (preparativoText.isEmpty() || competitivoText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Los campos de periodo preparativo y periodo competitivo no pueden estar vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                // Verificar que los campos solo contengan números enteros
+                int periodoPreparativo = Integer.parseInt(preparativoText);
+                int periodoCompetitivo = Integer.parseInt(competitivoText);
 
-        new DlgDistribuirSemanasPeriodos(macrociclo);
-        dispose();
+                int sumaPeriodos = periodoPreparativo + periodoCompetitivo;
+
+                // Verificar que la suma sea igual a semanasRedondeadasTotales
+                if (sumaPeriodos == semanasRedondeadasTotales) {
+                    macrociclo = new Macrociclo("Macrociclo1","Judo", fechaInicio, fechaFin, semanasRedondeadasTotales, periodoPreparativo, periodoCompetitivo);
+
+                    new DlgDistribuirSemanasPeriodos(macrociclo);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "La suma de los periodos de preparativo y competitivo debe ser igual a " + semanasRedondeadasTotales + ".", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Los campos de periodo preparativo y periodo competitivo deben contener valores numéricos(solo números enteros).", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void TextFieldSemanasTotalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextFieldSemanasTotalesActionPerformed
@@ -257,31 +284,44 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
     }//GEN-LAST:event_TextFieldSemanasTotalesActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
-        // Supongamos que fechaInicio y fechaFin son objetos Date previamente asignados.
-        try {
-            fechaInicio = toDate(null, dateTimeInicio);
-        } catch (Exception ex) {
-            Logger.getLogger(DlgRegistrarFechas.class.getName()).log(Level.SEVERE, null, ex);
+        if (dateTimeInicio != null && dateTimeFin != null) {
+            if (dateTimeInicio.getDate() != null && dateTimeFin.getDate() != null) {
+                try {
+                    fechaInicio = toDate(null, dateTimeInicio);
+                    fechaFin = toDate(null, dateTimeFin);
+
+                    if (fechaInicio != null && fechaFin != null && fechaInicio.before(fechaFin)) {
+                        long diferenciaEnMilisegundos = fechaFin.getTime() - fechaInicio.getTime();
+                        float semanas = (float) diferenciaEnMilisegundos / (1000 * 60 * 60 * 24 * 7);
+
+                        int semanasRedondeadasTotales = (int) Math.ceil(semanas);
+
+                        TextFieldSemanasTotales.setText(Integer.toString(semanasRedondeadasTotales));
+                    } else if (fechaInicio.equals(fechaFin)) {
+                        // Manejar el caso en el que las fechas de inicio y fin son iguales.
+                        JOptionPane.showMessageDialog(null, "La fecha de inicio y la fecha de fin son iguales", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        // Manejar el caso en el que las fechas no son válidas o si la fecha de inicio es posterior a la fecha de fin.
+                        JOptionPane.showMessageDialog(null, "La fecha de inicio es posterior a la fecha de fin", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(DlgRegistrarFechas.class.getName()).log(Level.SEVERE, null, ex);
+
+                    // Mostrar un mensaje de error en caso de excepción
+                    JOptionPane.showMessageDialog(null, "Se produjo un error al procesar las fechas", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                // Manejar el caso en el que una o ambas fechas no han sido seleccionadas.
+                JOptionPane.showMessageDialog(null, "Una o ambas fechas no han sido seleccionadas. Por favor, seleccione ambas fechas.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
-        try {
-            fechaFin = toDate(null, dateTimeFin);
-        } catch (Exception ex) {
-            Logger.getLogger(DlgRegistrarFechas.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
-        long diferenciaEnMilisegundos = fechaFin.getTime() - fechaInicio.getTime();
-        float semanas = (float) diferenciaEnMilisegundos / (1000 * 60 * 60 * 24 * 7);
 
-// Redondea hacia arriba
-        int semanasRedondeadasTotales = (int) Math.ceil(semanas);
-
-        TextFieldSemanasTotales.setText(Integer.toString(semanasRedondeadasTotales));
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void TextPorcentajePreparativoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextPorcentajePreparativoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_TextPorcentajePreparativoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -318,7 +358,7 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
         });
     }
 
-    public Date toDate(DateTimePicker dateTimePicker, DatePicker datePicker) throws Exception {
+    public Date toDate(DateTimePicker dateTimePicker, DatePicker datePicker) {
         ZoneId defaultZoneId = ZoneId.systemDefault();
 
         if (dateTimePicker != null) {
@@ -338,8 +378,7 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
             Date fecha = Date.from(datePicker.getDate().atStartOfDay(defaultZoneId).toInstant());
             return fecha;
         }
-        return null;
-
+        return null; // Devuelve null si ninguna fecha ha sido seleccionada
     }
 
 
@@ -347,6 +386,8 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
     private javax.swing.JTextField TextFieldCompetitivo;
     private javax.swing.JTextField TextFieldPreparativo;
     private javax.swing.JTextField TextFieldSemanasTotales;
+    private javax.swing.JTextField TextPorcentajeCompetitivo;
+    private javax.swing.JTextField TextPorcentajePreparativo;
     private javax.swing.JButton btnGuardar;
     private com.github.lgooddatepicker.components.DatePicker dateTimeFin;
     private com.github.lgooddatepicker.components.DatePicker dateTimeInicio;
@@ -357,8 +398,6 @@ public class DlgRegistrarFechas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 }

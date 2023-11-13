@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dialogsMacrociclo;
+package formularios;
 
 import entidades.Macrociclo;
 import interfaces.IPersistenciaFachada;
+import javax.swing.JOptionPane;
 import negocio.PersistenciaFachada;
 
 /**
@@ -91,6 +92,11 @@ public class DlgDistribuirSemanasPeriodos extends javax.swing.JFrame {
         });
 
         TextFieldSemanasMacrociclo.setEditable(false);
+        TextFieldSemanasMacrociclo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TextFieldSemanasMacrocicloActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Semanas total del Macrociclo");
 
@@ -133,7 +139,6 @@ public class DlgDistribuirSemanasPeriodos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel9)
@@ -225,9 +230,7 @@ public class DlgDistribuirSemanasPeriodos extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(TextFieldEtapaEspecial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))))
+                            .addComponent(jLabel7)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jLabel6)))
@@ -259,29 +262,62 @@ public class DlgDistribuirSemanasPeriodos extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
-        int etapaGeneral = Integer.parseInt(TextFieldPreparativo.getText());
-        int etapaEspecial = Integer.parseInt(TextFieldEtapaEspecial.getText());
-        int precompetitivo = Integer.parseInt(TextFieldPrecompetitivo.getText());
-        int competitivo = Integer.parseInt(TextFieldCompetitivo.getText());
+        try {
+            String preparativoText = TextFieldPreparativo.getText().trim();
+            String etapaEspecialText = TextFieldEtapaEspecial.getText().trim();
+            String precompetitivoText = TextFieldPrecompetitivo.getText().trim();
+            String competitivoText = TextFieldCompetitivo.getText().trim();
 
-// Crear una nueva instancia de Macrociclo
-        macrociclo.setSemanasPeriodoPrepEtapaGeneral(etapaGeneral);
-        macrociclo.setSemanasPeriodoPrepEtapaEspecial(etapaEspecial);
-        macrociclo.setSemanasPeriodoCompPrecompetitivo(precompetitivo);
-        macrociclo.setSemanasPeriodoCompCompetitivo(competitivo);
+            // Verificar que los campos no estén vacíos
+            if (preparativoText.isEmpty() || etapaEspecialText.isEmpty() || precompetitivoText.isEmpty() || competitivoText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ninguno de los campos puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Verificar que los campos solo contengan números válidos
+                if (preparativoText.matches("\\d+") && etapaEspecialText.matches("\\d+") && precompetitivoText.matches("\\d+") && competitivoText.matches("\\d+")) {
+                    int etapaGeneral = Integer.parseInt(preparativoText);
+                    int etapaEspecial = Integer.parseInt(etapaEspecialText);
+                    int precompetitivo = Integer.parseInt(precompetitivoText);
+                    int competitivo = Integer.parseInt(competitivoText);
 
-// Actualizar el objeto macrociclo en la base de datos
-        persistencia.actualizarMacrociclo(macrociclo);
+                    int semanasPreparatorio = Integer.parseInt(TextFieldSemanasPreparatorio.getText());
+                    int semanasCompetitivo = Integer.parseInt(TextFieldSemanasCompetitivo.getText());
 
-        new DlgSeleccionarMediosFisicos(macrociclo);
-        dispose();
+                    // Verificar que la suma de etapaGeneral y etapaEspecial sea igual a semanasPreparatorio
+                    if (etapaGeneral + etapaEspecial == semanasPreparatorio) {
+                        // Verificar que la suma de precompetitivo y competitivo sea igual a semanasCompetitivo
+                        if (precompetitivo + competitivo == semanasCompetitivo) {
+                            macrociclo.setSemanasPeriodoPrepEtapaGeneral(etapaGeneral);
+                            macrociclo.setSemanasPeriodoPrepEtapaEspecial(etapaEspecial);
+                            macrociclo.setSemanasPeriodoCompPrecompetitivo(precompetitivo);
+                            macrociclo.setSemanasPeriodoCompCompetitivo(competitivo);
+
+                            // Actualizar el objeto macrociclo en la base de datos
+                            // persistencia.actualizarMacrociclo(macrociclo);
+                            new DlgSeleccionarMediosFisicos(macrociclo);
+                            dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "La suma de Precompetitivo y Competitivo debe ser igual a " + semanasCompetitivo + ".", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "La suma de Etapa General y Etapa Especial debe ser igual a " + semanasPreparatorio + ".", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Todos los campos deben contener valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Todos los campos deben contener solo números enteros.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     private void TextFieldSemanasPreparatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextFieldSemanasPreparatorioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TextFieldSemanasPreparatorioActionPerformed
+
+    private void TextFieldSemanasMacrocicloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TextFieldSemanasMacrocicloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TextFieldSemanasMacrocicloActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
