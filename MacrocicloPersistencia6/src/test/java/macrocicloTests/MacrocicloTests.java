@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package macrocicloTests2;
+package macrocicloTests;
  
 import entidades.Macrociclo;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import persistencia.MacrociclosDAO;
  *
  * @author x11_r
  */
-public class MacrocicloTests2 {
+public class MacrocicloTests {
     
     private MacrociclosDAO macrociclosDAO;
 
