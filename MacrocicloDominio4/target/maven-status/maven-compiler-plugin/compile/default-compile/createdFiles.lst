@@ -1,0 +1,7 @@
+entidades\MedioFisico.class
+entidades\VolumenMedioFisico.class
+entidades\Mesociclo.class
+entidades\Microciclo.class
+enums\Rama.class
+enums\Etapa.class
+entidades\Macrociclo.class

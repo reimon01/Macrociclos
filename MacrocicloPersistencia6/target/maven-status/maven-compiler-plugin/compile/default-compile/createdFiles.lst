@@ -1,0 +1,6 @@
+interfaces\IConexionBD.class
+interfaces\IPersistencia.class
+persistencia\Persistencia.class
+interfaces\IMacrociclosDAO.class
+persistencia\ConexionBD.class
+persistencia\MacrociclosDAO.class

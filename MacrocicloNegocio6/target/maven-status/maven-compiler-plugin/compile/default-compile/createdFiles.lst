@@ -1,0 +1,4 @@
+negocio\MacrociclosService.class
+interfaces\IPersistenciaFachada.class
+negocio\PersistenciaFachada.class
+interfaces\IMacrociclosService.class
