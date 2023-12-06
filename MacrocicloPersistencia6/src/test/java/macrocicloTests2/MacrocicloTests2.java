@@ -22,34 +22,34 @@ public class MacrocicloTests2 {
     
     private MacrociclosDAO macrociclosDAO;
 
-    @Before
+
+    
+        @Before
     public void setUp() {
-        // Inicializar el mock de EntrenadorDAO antes de cada prueba
-        macrociclosDAO = mock(MacrociclosDAO.class);
+         macrociclosDAO = mock(MacrociclosDAO.class);
     }
 
-    @Test
+    
+     
+       @Test
     public void registrarMacrocicloTest() {
-        System.out.println("H10_CP1 - Verificar que un Macrociclo pueda registrarse correctamente.");
+        System.out.println("H1-cp1:Verificar que un Macrociclo pueda registrarse.");
 
         boolean expResult = true;
 
         Macrociclo e = new Macrociclo("Macrociclo424" ,"Judo",12,10,11);
 
-        // Configurar el comportamiento simulado utilizando Mockito
-        when(macrociclosDAO.registrarMacrociclo(e)).thenReturn(true);
+         when(macrociclosDAO.registrarMacrociclo(e)).thenReturn(true);
 
-        // Lógica de prueba que utiliza el mock de EntrenadorDAO
-        boolean result = macrociclosDAO.registrarMacrociclo(e);
+         boolean result = macrociclosDAO.registrarMacrociclo(e);
 
-        // Verificar la aserción utilizando Mockito
-        assertEquals(expResult, result);
+         assertEquals(expResult, result);
     }
 
  
     @Test
     public void validarMacrocicloExistente() {
-        System.out.println("H10_CP3 - Probar que el sistema maneje adecuadamente el intento de registro con un nombre que ya se esta usuando.");
+        System.out.println("H1:CP3:registro con un nombre que ya existe.");
 
         Macrociclo e = new Macrociclo("Macrociclo424" ,"Judo",12,10,11);
 
