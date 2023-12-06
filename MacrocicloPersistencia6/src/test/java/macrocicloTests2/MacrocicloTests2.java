@@ -47,7 +47,12 @@ public class MacrocicloTests2 {
     }
 
  
-    @Test
+ 
+    
+    
+    
+    
+       @Test
     public void validarMacrocicloExistente() {
         System.out.println("H1:CP3:registro con un nombre que ya existe.");
 
@@ -56,13 +61,14 @@ public class MacrocicloTests2 {
         // Configurar el comportamiento simulado utilizando Mockito
         when(macrociclosDAO.registrarMacrociclo(e)).thenReturn(true);
 
-        // Lógica de prueba que utiliza el mock de EntrenadorDAO
+        // Lógica de prueba que utiliza el mock de macrociclosDAO
         boolean result = macrociclosDAO.registrarMacrociclo(e);
 
         // Verificar la aserción utilizando Mockito
         assertTrue(result);
     }
 
+    
     @Test
     public void crearMacrocicloNullTest() {
         System.out.println("Validamos crear un Macrociclo nulo.");
