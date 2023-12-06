@@ -36,6 +36,12 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
+<<<<<<< HEAD
+=======
+          
+    - name: Build MacrocicloDominio4
+      run: mvn -f MacrocicloDominio4/pom.xml clean install
+>>>>>>> 82253bb8108ec010f7aae2b0862c7ed7d9286bab
 
     - name: Build MacrocicloPersistencia6
       run: mvn -f MacrocicloPersistencia6/pom.xml clean install
@@ -46,5 +52,8 @@ jobs:
     - name: Build MacrocicloMain6
       run: mvn -f MacrocicloMain6/pom.xml clean install
 
+<<<<<<< HEAD
     - name: Build MacrocicloDominio4
       run: mvn -f MacrocicloDominio4/pom.xml clean install
+=======
+>>>>>>> 82253bb8108ec010f7aae2b0862c7ed7d9286bab
